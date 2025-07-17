@@ -1,0 +1,19 @@
+en:
+  label_cash_flow: "Cash Flow"
+  label_cash_flow_new_entry: "New Cash Flow Entry"
+  label_cash_flow_edit_entry: "Edit Cash Flow Entry"
+  label_cash_flow_revenue: "Revenue"
+  label_cash_flow_expense: "Expense"
+  label_cash_flow_category: "Category"
+  label_cash_flow_summary: "Summary"
+  label_cash_flow_total_revenue: "Total Revenue"
+  label_cash_flow_total_expense: "Total Expense"
+  label_cash_flow_balance: "Balance"
+  error_unable_to_delete_cash_flow_entry: "Unable to delete cash flow entry."
+
+  permission_view_cash_flow: "View Cash Flow"
+  permission_manage_cash_flow_entries: "Manage Cash Flow Entries"
+
+  field_entry_date: "Entry Date"
+  field_transaction_type: "Transaction Type"
+  field_amount: "Amount"

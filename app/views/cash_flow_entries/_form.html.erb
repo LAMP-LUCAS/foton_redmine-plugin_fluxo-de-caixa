@@ -1,0 +1,33 @@
+<%= form_for cash_flow_entry, url: (cash_flow_entry.new_record? ? cash_flow_entries_path : cash_flow_entry_path(cash_flow_entry)) do |f| %>
+  <%= error_messages_for cash_flow_entry %>
+
+  <div class="box">
+    <p>
+      <%= f.label :entry_date %> <span class="required">*</span><br />
+      <%= f.date_field :entry_date, value: (cash_flow_entry.entry_date || Date.today), class: 'date_picker' %>
+    </p>
+    <p>
+      <%= f.label :description %> <span class="required">*</span><br />
+      <%= f.text_field :description, size: 80, maxlength: 255 %>
+    </p>
+    <p>
+      <%= f.label :amount %> <span class="required">*</span><br />
+      <%= f.number_field :amount, step: '0.01', min: 0, size: 10 %>
+    </p>
+    <p>
+      <%= f.label :transaction_type %> <span class="required">*</span><br />
+      <%= f.select :transaction_type, transaction_type_collection, include_blank: true %>
+    </p>
+    <p>
+      <%= f.label :category %> <span class="required">*</span><br />
+      <%= f.text_field :category, size: 50, maxlength: 100 %>
+    </p>
+    <p>
+      <%= f.label :project_id %><br />
+      <%= f.select :project_id, project_collection_for_select(User.current.projects.active.order(:name)), include_blank: true %>
+    </p>
+  </div>
+
+  <%= submit_tag l(:button_save) %>
+  <%= link_to l(:button_cancel), cash_flow_entries_path %>
+<% end %>

@@ -1,0 +1,12 @@
+<h2>Importar lançamentos do caixa via CSV</h2>
+<p>Faça upload de um arquivo CSV no formato correto. <a href="/plugin_assets/redmine_cash_flow_pro/import_template.csv">Baixar template</a></p>
+<%= form_tag import_cash_flow_entries_path, multipart: true do %>
+  <p>
+    <label for="csv_file">Arquivo CSV:</label>
+    <%= file_field_tag :csv_file, accept: '.csv' %>
+  </p>
+  <%= submit_tag 'Importar', class: 'button' %>
+<% end %>
+<p style="margin-top:2em;">
+  <%= link_to 'Voltar para lançamentos', cash_flow_entries_path, class: 'icon icon-back' %>
+</p>

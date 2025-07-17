@@ -1,0 +1,16 @@
+<h2><%= l(:label_cash_flow_settings) %></h2>
+
+<p>
+  <%= l(:label_cash_flow_setting_description) %>
+</p>
+
+<div class="box">
+  <p>
+    <%= f.label :setting1, "Configuração 1" %><br />
+    <%= f.text_field :setting1, value: @settings['setting1'] %>
+  </p>
+  <p>
+    <%= f.label :setting2, "Configuração 2" %><br />
+    <%= f.check_box :setting2, { checked: @settings['setting2'] }, 'true', 'false' %>
+  </p>
+</div>

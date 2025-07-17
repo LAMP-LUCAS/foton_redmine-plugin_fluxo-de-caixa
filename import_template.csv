@@ -1,0 +1,4 @@
+entry_date,description,amount,transaction_type,category,project_id
+2025-07-01,Receita de vendas,1500.50,revenue,Vendas,1
+2025-07-02,Pagamento fornecedor,500.00,expense,Fornecedores,1
+2025-07-03,Salário funcionário,2000.00,expense,Salários,1
