@@ -48,6 +48,7 @@
 /* ======================
    CABEÇALHO E FILTROS
    ====================== */
+
 .filters-header {
   display: flex;
   align-items: center;
@@ -57,6 +58,19 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+@media (max-width: 768px) {
+  .filters-header {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+
+  }
+  .filters-header a {
+    align-items: baseline;
+  }
+
+}
 
 .filters-actions {
   display: flex;
@@ -101,43 +115,6 @@
    BOTÕES DE AÇÃO
    ====================== */
 .contextual {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.contextual a {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 16px;
-  color: white;
-  border-radius: var(--border-radius);
-  text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.contextual a:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.contextual a:active {
-  transform: translateY(0);
-}
-
-.contextual a.icon-add {
-  background: var(--success-color);
-}
-
-.contextual a.icon-import {
-  background: var(--disabled-color);
-}
-
-.contextual a.icon-export {
-  background: var(--primary-color);
 }
 
 /* ======================

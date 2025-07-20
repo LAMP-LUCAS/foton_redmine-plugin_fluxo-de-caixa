@@ -3,38 +3,24 @@
   <%= javascript_include_tag "cash_flow?v=#{Time.now.to_i}", plugin: 'redmine_cash_flow_pro' %>
 <% end %>
 
-<div class="contextual">
-  <%= link_to l(:button_new_entry), new_cash_flow_entry_path, 
-        class: 'icon icon-add', 
-        title: l(:title_create_new_entry),
-        data: { toggle: 'tooltip' } if User.current.allowed_to?(:manage_cash_flow_entries, nil, global: true) %>
-  
-  <%= link_to l(:button_import), import_form_cash_flow_entries_path, 
-        class: 'icon icon-import', 
-        title: l(:title_import_entries),
-        data: { toggle: 'tooltip' } %>
-        
-  <%= link_to l(:button_export), export_cash_flow_entries_path(request.query_parameters), 
-        class: 'icon icon-export', 
-        title: l(:title_export_entries),
-        data: { toggle: 'tooltip' } %>
-</div>
-
-<div class="filters-header">
+<div class="cash-flow-header">
   <h2><%= l(:label_cash_flow) %></h2>
-  <!--
-  <button type="button" class="show-filters" 
-          aria-label="<%= l(:label_filter_plural) %>"
-          aria-expanded="false"
-          data-toggle="filters-dropdown">
-    <span class="icon icon-filter"></span>
-    <span class="filters-header-text"><%= l(:label_filter_plural) %></span>
-  </button>
-  
-  <button class="filter-toggle" aria-label="<%= l(:label_toggle_filters) %>" aria-expanded="false"> 
-    <span class="active-filters-count" aria-hidden="true"></span>
-  </button>
-  -->
+  <div class="header-actions">
+    <% if User.current.allowed_to?(:manage_cash_flow_entries, nil, global: true) %>
+      <%= link_to l(:button_new_entry), new_cash_flow_entry_path, 
+            class: 'icon icon-add', 
+            title: l(:title_create_new_entry),
+            data: { toggle: 'tooltip' } %>
+    <% end %>
+    <%= link_to l(:button_import), import_form_cash_flow_entries_path, 
+          class: 'icon icon-import', 
+          title: l(:title_import_entries),
+          data: { toggle: 'tooltip' } %>
+    <%= link_to l(:button_export), export_cash_flow_entries_path(request.query_parameters), 
+          class: 'icon icon-export', 
+          title: l(:title_export_entries),
+          data: { toggle: 'tooltip' } %>
+  </div>
 </div>
 
 <% if params[:query].present? %>

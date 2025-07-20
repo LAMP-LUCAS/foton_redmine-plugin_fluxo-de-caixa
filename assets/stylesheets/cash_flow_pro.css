@@ -81,6 +81,32 @@
   gap: 1em;
 }
 
+.cash-flow-header .header-actions a {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  color: white;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cash-flow-header .header-actions a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cash-flow-header .header-actions a.icon-add {
+  background: var(--color-success);
+}
+.cash-flow-header .header-actions a.icon-import {
+  background: var(--color-neutral);
+}
+.cash-flow-header .header-actions a.icon-export {
+  background: var(--color-primary);
+}
 /* --- Filtros --- */
 .cash-flow-filters {
   grid-area: filters;
@@ -342,6 +368,8 @@ details[open] > .column-filter-btn {
   .cash-flow-header {
     position: relative;
     top: auto;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   .list.cash-flow-entries th {
@@ -358,6 +386,11 @@ details[open] > .column-filter-btn {
 @media (max-width: 768px) {
   .cash-flow-grid-container {
     gap: 1em;
+  }
+  
+  .cash-flow-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   .list.cash-flow-entries th, 
