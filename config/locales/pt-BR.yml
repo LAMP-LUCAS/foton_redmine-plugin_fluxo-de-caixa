@@ -1,58 +1,136 @@
-
 pt-BR:
+  ## ============== GERAL ==============
+  # Labels básicos
+  label_all: "Todos"
+  label_min: "Mínimo"
+  label_max: "Máximo"
+  label_total: "Movimentação Total"
+  label_no_data: "Nenhum lançamento encontrado."
+  
+  # Botões genéricos
+  button_apply: "Aplicar"
+  button_back: "Voltar"
+  button_save: "Salvar"
+  button_cancel: "Cancelar"
+  button_clear: "Limpar"
+  button_edit: "Editar"
+  button_delete: "Excluir"
+  button_close: "Fechar"
+  button_filter: "Filtrar"
+  button_new_entry: "Novo lançamento"
+  
+  # Mensagens genéricas
+  text_are_you_sure: "Tem certeza?"
+  notice_successful_create: "Lançamento criado com sucesso."
+  notice_successful_update: "Configurações atualizadas com sucesso."
+  notice_successful_delete: "Lançamento excluído com sucesso."
+  error_unable_to_delete_cash_flow_entry: "Não foi possível excluir o lançamento do fluxo de caixa."
+
+  ## ============== FILTROS ==============
+  label_filter: "Filtrar"
+  label_filter_plural: "Filtros"
+  label_active_filters: "Filtros ativos"
+  label_no_filters: "Nenhum filtro aplicado"
+  label_filters_modal_title: "Filtros avançados"
+  
+  # Campos de filtro
+  field_date_range: "Período"
+  field_from_date: "Data inicial"
+  field_to_date: "Data final"
+  field_issue: "Demanda"
+  field_author: "Autor"
+  field_project: "Projeto"
+  field_user: "Usuário"
+  field_status: "Status"
+  
+  # Labels de filtro
+  label_from_date: "Data inicial"
+  label_to_date: "Data final"
+  label_select_category: "Selecione uma categoria"
+  label_select_project: "Selecione um projeto"
+  label_select_status: "Selecione um status"
+  
+  # Textos de filtros ativos
+  text_filter_date_range: "Período: %{from} até %{to}"
+  text_filter_type: "Tipo: %{type}"
+  text_filter_category: "Categoria: %{category}"
+  text_filter_project: "Projeto: %{project}"
+  text_filter_status: "Status: %{status}"
+
+  ## ============== FLUXO DE CAIXA ==============
   label_cash_flow: "Fluxo de Caixa"
   label_cash_flow_new_entry: "Novo Lançamento de Fluxo de Caixa"
   label_cash_flow_edit_entry: "Editar Lançamento de Fluxo de Caixa"
+  label_cash_flow_summary: "Resumo"
   label_cash_flow_revenue: "Receita"
   label_cash_flow_expense: "Despesa"
-  label_cash_flow_category: "Categoria"
-  label_cash_flow_summary: "Resumo"
   label_cash_flow_total_revenue: "Total de Receitas"
   label_cash_flow_total_expense: "Total de Despesas"
   label_cash_flow_balance: "Saldo Total"
-  error_unable_to_delete_cash_flow_entry: "Não foi possível excluir o lançamento do fluxo de caixa."
+  label_cash_flow_category: "Categoria"
+  label_add_category: "Adicionar categoria"
+  label_cash_flow_currency: "Moeda padrão"
+  text_cash_flow_currency_info: "Esta moeda será usada como padrão para novos lançamentos."
 
-  label_cash_flow_settings: "Configurações do Fluxo de Caixa"
-  label_cash_flow_setting_description: "Aqui você pode configurar as opções do plugin de Fluxo de Caixa."
-
-  notice_successful_update: "Configurações atualizadas com sucesso."
-
-  permission_view_cash_flow: "Visualizar Fluxo de Caixa"
-  permission_manage_cash_flow_entries: "Gerenciar Lançamentos de Fluxo de Caixa"
-
+  ## ============== TRANSAÇÕES ==============
+  # Campos de transação
   field_entry_date: "Data do Lançamento"
   field_transaction_type: "Tipo de Transação"
   field_amount: "Valor"
   field_description: "Descrição"
   field_notes: "Observação"
+  field_created_on: "Criado em"
+  
+  # Tipos de transação
+  label_transaction_type: "Tipo de Transação"
+  label_transaction_type_revenue: "Receita"
+  label_transaction_type_expense: "Despesa"
+  transaction_type_revenue: "Receita"
+  transaction_type_expense: "Despesa"
+  
+  # Validações
+  error_transaction_type_blank: "Tipo de transação não pode ficar vazio."
+  error_transaction_type_inclusion: "Tipo de transação inválido."
 
+  ## ============== STATUS ==============
+  label_status_pending: "Pendente"
+  label_status_paid: "Pago"
+  label_status_blocked: "Bloqueado"
+  label_status_rejected: "Rejeitado"
+  label_cash_flow_status_pending: "Pendente"
+  label_cash_flow_status_paid: "Pago"
+  label_cash_flow_status_blocked: "Bloqueado"
+  label_cash_flow_status_rejected: "Rejeitado"
+
+  ## ============== IMPORTAÇÃO ==============
+  label_cash_flow_import: "Importar Lançamentos"
+  label_download_template: "Baixar template"
+  label_select_csv_file: "Selecionar arquivo CSV"
+  text_no_file_selected: "Nenhum arquivo selecionado"
+  text_import_instructions: "Faça upload de um arquivo CSV no formato correto:"
+  text_import_tip_date: "Data deve estar no formato AAAA-MM-DD"
+  text_import_tip_amount: "Valores devem usar ponto como separador decimal (ex: 1250.50)"
+  text_import_tip_types: "Tipos de transação: 'Receita' ou 'Despesa'"
+  text_import_tip_encoding: "Arquivo deve estar codificado em UTF-8"
+
+  ## ============== CONFIGURAÇÕES ==============
+  label_cash_flow_settings: "Configurações do Fluxo de Caixa"
+  label_cash_flow_setting_description: "Aqui você pode configurar as opções do plugin de Fluxo de Caixa."
+  label_cash_flow_show_in_top_menu: "Mostrar no menu principal"
+  label_cash_flow_categories: "Categorias"
+  
+  # Configurações de colunas
   label_cash_flow_default_columns: "Colunas padrão do fluxo de caixa"
   text_cash_flow_default_columns_info: "Selecione as colunas que serão exibidas por padrão na tabela do fluxo de caixa."
+  
+  # Configurações de projetos
   label_cash_flow_custom_projects: "Projetos com tabela própria de fluxo de caixa"
   text_cash_flow_custom_projects_info: "Selecione os projetos que terão uma tabela exclusiva de fluxo de caixa. Os demais usarão a tabela global."
+  
+  # Configurações de usuários
   label_cash_flow_permanent_users: "Usuários com acesso permanente ao fluxo de caixa"
   text_cash_flow_permanent_users_info: "Estes usuários sempre poderão acessar o fluxo de caixa, independentemente das permissões do projeto. O administrador sempre terá acesso total."
 
-  label_no_data: "Nenhum lançamento encontrado."
-  button_new_entry: "Novo lançamento"
-  button_edit: "Editar"
-  button_delete: "Excluir"
-  button_save: "Salvar"
-  button_cancel: "Cancelar"
-  button_apply: "Aplicar"
-  button_clear: "Limpar"
-  text_are_you_sure: "Tem certeza?"
-  field_project: "Projeto"
-  field_user: "Usuário"
-  field_created_on: "Criado em"
-  label_filter_plural: "Filtros"
-  label_add_category: "Adicionar categoria"
-  label_cash_flow_currency: "Moeda padrão"
-  text_cash_flow_currency_info: "Esta moeda será usada como padrão para novos lançamentos."
-  label_cash_flow_show_in_top_menu: "Mostrar no menu principal"
-  label_cash_flow_categories: "Categorias"
-  notice_successful_create: "Lançamento criado com sucesso."
-  notice_successful_delete: "Lançamento excluído com sucesso."
-
-  field_from_date: "Data inicial"
-  field_to_date: "Data final"
+  ## ============== PERMISSÕES ==============
+  permission_view_cash_flow: "Visualizar Fluxo de Caixa"
+  permission_manage_cash_flow_entries: "Gerenciar Lançamentos de Fluxo de Caixa"

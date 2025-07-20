@@ -8,21 +8,24 @@ Redmine::Plugin.register :redmine_cash_flow_pro do
   description 'Plugin de fluxo de caixa para Redmine desenvolvido pela comunidade FOTON'
   version '0.0.1'
 
-  # Menu principal (só aparece se o usuário tiver permissão global ou for admin)
+  # Hooks do plugin
+  require File.expand_path('../lib/redmine_cash_flow_pro/hooks', __FILE__)
+
+  # Menu principal
   menu :top_menu, 
        :cash_flow_pro,
        { controller: 'cash_flow_entries', action: 'index' },
        caption: :label_cash_flow,
        if: proc { User.current.admin? || User.current.allowed_to?(:view_cash_flow, nil, global: true) }
 
-  # Menu de administração (só aparece para admins)
+  # Menu de administração
   menu :admin_menu,
        :cash_flow_settings,
        { controller: 'cash_flow_settings', action: 'index' },
        caption: :label_cash_flow_settings,
        html: { class: 'icon icon-settings' }
   
-  # Menu de Projetos (só aparece se o usuário tiver permissão global ou for admin)
+  # Menu de Projetos
   menu :project_menu, :cash_flow_pro, { controller: 'cash_flow_entries', action: 'index' }, 
      caption: :label_cash_flow, param: :project_id, 
      if: proc { |p| User.current.admin? || User.current.allowed_to?(:view_cash_flow, p) }
@@ -38,13 +41,6 @@ Redmine::Plugin.register :redmine_cash_flow_pro do
   end
 
   # Configurações do plugin
-  #
-  # default_columns: colunas padrão exibidas na tabela do fluxo de caixa
-  # custom_projects: IDs dos projetos com tabela própria de fluxo de caixa
-  # permanent_users: IDs dos usuários com acesso permanente ao fluxo de caixa
-  # categories: categorias customizadas
-  # show_in_top_menu: exibe ou não o menu principal
-  # default_currency: moeda padrão
   settings default: {
     'default_columns' => %w[entry_date transaction_type amount category description notes],
     'custom_projects' => [],
@@ -54,13 +50,27 @@ Redmine::Plugin.register :redmine_cash_flow_pro do
     'default_currency' => 'BRL'
   },
   partial: 'settings/cash_flow_pro_settings'
+
+  # Assets
+  plugin_root = File.dirname(__FILE__)
+  Rails.application.config.assets.paths << File.join(plugin_root, 'assets', 'stylesheets')
+  Rails.application.config.assets.paths << File.join(plugin_root, 'assets', 'javascripts')
+  
+  Rails.application.config.assets.precompile += %w[
+    cash_flow_pro.css
+    cash_flow_filters.css
+    cash_flow.js
+    cash_flow_filters.js
+  ]
 end
 
-# frozen_string_literal: true
-
-
 RedmineApp::Application.routes.draw do
-  resources :cash_flow_entries
+  resources :cash_flow_entries do
+    collection do
+      get 'export'
+    end
+  end
+  
   get 'cash_flow_settings', to: 'cash_flow_settings#index'
   post 'cash_flow_settings', to: 'cash_flow_settings#update'
 end

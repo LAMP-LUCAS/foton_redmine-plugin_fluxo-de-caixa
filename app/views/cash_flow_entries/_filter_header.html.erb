@@ -1,0 +1,38 @@
+<th class="filterable-th">
+  <span><%= label %></span>
+  <details>
+    <summary class="column-filter-btn" aria-label="<%= l(:label_filter) %>" aria-expanded="false">
+      <span class="icon icon-filter" aria-hidden="true"></span>
+      <span class="sr-only"></span>
+    </summary>
+    <div class="column-filter-dropdown">
+      <div class="dropdown-form">
+        <label><%= field_label %></label>
+        <% if defined?(input_type) %>
+          <% case input_type %>
+          <% when 'text' %>
+            <%= text_field_tag "query[#{field_name}]", value, placeholder: field_label %>
+          <% when 'date_range' %>
+            <div class="date-range">
+              <%= date_field_tag "query[#{field_name.first}]", values.first, placeholder: l(:field_from_date) %>
+              <span class="date-separator">-</span>
+              <%= date_field_tag "query[#{field_name.last}]", values.last, placeholder: l(:field_to_date) %>
+            </div>
+          <% when 'number_range' %>
+            <div class="number-range">
+              <%= number_field_tag "query[#{field_name.first}]", values.first, placeholder: l(:label_min), step: 0.01 %>
+              <span>-</span>
+              <%= number_field_tag "query[#{field_name.last}]", values.last, placeholder: l(:label_max), step: 0.01 %>
+            </div>
+          <% end %>
+        <% else %>
+          <%= select_tag "query[#{field_name}]", options_for_select(options, selected) %>
+        <% end %>
+        <div class="dropdown-actions">
+          <%= submit_tag l(:button_apply), class: 'button -primary' %>
+          <%= button_tag l(:button_clear), type: :button, class: 'button -secondary clear-filter' %>
+        </div>
+      </div>
+    </div>
+  </details>
+</th>

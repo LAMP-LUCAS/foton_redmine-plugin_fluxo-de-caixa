@@ -3,31 +3,69 @@
 
   <div class="box">
     <p>
+      <!-- Data do lançamento [OBRIGATÓRIO] -->
       <%= f.label :entry_date %> <span class="required">*</span><br />
       <%= f.date_field :entry_date, value: (cash_flow_entry.entry_date || Date.today), class: 'date_picker' %>
     </p>
+
     <p>
-      <%= f.label :description %> <span class="required">*</span><br />
-      <%= f.text_field :description, size: 80, maxlength: 255 %>
+      <!-- Tipo de transação [OBRIGATÓRIO] -->
+      <%= f.label :transaction_type, l(:label_transaction_type) %> <span class="required">*</span><br />
+      <%= f.select :transaction_type, options_for_select([
+            [l(:transaction_type_revenue), 'revenue'],
+            [l(:transaction_type_expense), 'expense'],
+          ], selected: cash_flow_entry.transaction_type),
+          {},
+          required: true %>
     </p>
+
     <p>
+      <!-- Valor do lançamento [OBRIGATÓRIO] -->
       <%= f.label :amount %> <span class="required">*</span><br />
-      <%= f.number_field :amount, step: '0.01', min: 0, size: 10 %>
+      <%= f.number_field :amount, step: '0.01', min: 0, size: 10, placeholder: '00,00' %>
     </p>
+
     <p>
-      <%= f.label :transaction_type %> <span class="required">*</span><br />
-      <%= f.select :transaction_type, transaction_type_collection, include_blank: true %>
-    </p>
-    <p>
+      <!-- Categoria do lançamento [OBRIGATÓRIO] -->
       <%= f.label :category %> <span class="required">*</span><br />
-      <%= f.text_field :category, size: 50, maxlength: 100 %>
+      <%= f.text_field :category, size: 50, maxlength: 100, placeholder: l(:label_cash_flow_category) %>
     </p>
     <p>
-      <%= f.label :project_id %><br />
-      <%= f.select :project_id, project_collection_for_select(User.current.projects.active.order(:name)), include_blank: true %>
+      <!-- Descrição do lançamento [OBRIGATÓRIO] -->        
+      <%= f.label :description, l(:field_description) %> <span class="required">*</span><br />
+      <%= f.text_field :description, size: 80, maxlength: 255, placeholder: l(:field_description) %>
+    </p>
+    
+    <p>
+      <!-- Status do lançamento [OBRIGATÓRIO] -->
+      <%= f.label :status, l(:field_status)  %> <span class="required">*</span><br />
+      <%= f.select :status, options_for_select(
+        CashFlowEntry.status_options,
+        selected: cash_flow_entry.status) %>
+    </p>
+    
+    <p>
+      <!-- Projeto [FACULTATIVO] -->
+      <%= f.label :project_id, l(:field_project) %><br />
+      <%= f.select :project_id, options_for_select(
+            project_collection_for_select(User.current.projects.active.order(:name)), 
+            selected: cash_flow_entry.project_id
+          ), 
+          include_blank: l(:label_all) %>
+    </p>
+    <p>
+      <!-- Tarefas do Projeto [FACULTATIVO] -->
+      <%= f.label :issue_id, l(:field_issue) %><br />
+      <%= f.select :issue_id, 
+            options_from_collection_for_select(
+              cash_flow_entry.project ? cash_flow_entry.project.issues.order(:id) : [], 
+              :id, :subject, 
+              cash_flow_entry.issue_id
+            ), 
+            include_blank: true %>
     </p>
   </div>
 
-  <%= submit_tag l(:button_save) %>
-  <%= link_to l(:button_cancel), cash_flow_entries_path %>
+  <%= submit_tag l(:button_save), class: 'button-positive' %>
+  <%= link_to l(:button_cancel), cash_flow_entries_path, class: 'button' %>
 <% end %>

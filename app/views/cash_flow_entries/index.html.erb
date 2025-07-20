@@ -1,107 +1,212 @@
-<div class="contextual">
-  <%= link_to l(:button_new_entry), new_cash_flow_entry_path, class: 'icon icon-add' if User.current.allowed_to?(:manage_cash_flow_entries, nil, global: true) %>
-  <%= link_to 'Importar CSV', import_form_cash_flow_entries_path, class: 'icon icon-import' %>
-  <%= link_to 'Exportar CSV', export_cash_flow_entries_path(request.query_parameters), class: 'icon icon-export' %>
-</div>
-
-<h2><%= l(:label_cash_flow) %></h2>
-
-<%= form_tag(cash_flow_entries_path, method: :get, id: 'filters_form') do %>
-  <fieldset class="collapsible">
-    <legend><%= l(:label_filter_plural) %></legend>
-    <div class="filters">
-      <p>
-        <label><%= l(:field_from_date) %></label>
-        <%= date_field_tag 'query[from_date]', @query[:from_date], class: 'date_picker' %>
-        <label><%= l(:field_to_date) %></label>
-        <%= date_field_tag 'query[to_date]', @query[:to_date], class: 'date_picker' %>
-      </p>
-      <p>
-        <label><%= l(:field_transaction_type) %></label>
-        <%= select_tag 'query[transaction_type]', options_for_select([['Todos', '']] + transaction_type_collection, @query[:transaction_type]), include_blank: true %>
-      </p>
-      <p>
-        <label><%= l(:label_cash_flow_category) %></label>
-        <%= select_tag 'query[category]', options_for_select([['Todos', '']] + @available_categories.map { |c| [c, c] }, @query[:category]), include_blank: true %>
-      </p>
-      <p>
-        <label><%= l(:field_project) %></label>
-        <%= select_tag 'query[project_id]', options_for_select([['Todos', '']] + project_collection_for_select(@projects), @query[:project_id]), include_blank: true %>
-      </p>
-      <p class="buttons">
-        <%= submit_tag l(:button_apply), class: 'button' %>
-        <%= link_to l(:button_clear), cash_flow_entries_path, class: 'button' %>
-      </p>
-    </div>
-  </fieldset>
-<% end %>
-
-<div class="autoscroll">
-  <table class="list cash-flow-entries">
-    <thead>
-      <tr>
-        <% column_labels = {
-          'entry_date' => l(:field_entry_date),
-          'description' => l(:field_description),
-          'amount' => l(:field_amount),
-          'transaction_type' => l(:field_transaction_type),
-          'category' => l(:label_cash_flow_category),
-          'notes' => l(:field_notes),
-          'project_id' => l(:field_project),
-          'user_id' => l(:field_user),
-          'created_at' => l(:field_created_on)
-        } %>
-        <% @columns.each do |col| %>
-          <th><%= column_labels[col] || col.humanize %></th>
-        <% end %>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if @cash_flow_entries.empty? %>
-        <tr>
-          <td colspan="<%= @columns.size + 1 %>" class="no-data"><%= l(:label_no_data) %></td>
-        </tr>
-      <% else %>
-        <% @cash_flow_entries.each do |entry| %>
-          <tr class="<%= cycle('odd', 'even') %>">
-            <% @columns.each do |col| %>
-              <% value = case col
-                when 'entry_date' then format_date(entry.entry_date)
-                when 'description' then entry.description
-                when 'amount' then format_amount(entry.amount)
-                when 'transaction_type' then entry.transaction_type_label
-                when 'category' then entry.category
-                when 'notes' then ''
-                when 'project_id' then (entry.project.present? ? link_to_project(entry.project) : '')
-                when 'user_id' then link_to_user(entry.user)
-                when 'created_at' then format_datetime(entry.created_at)
-                else entry.send(col) rescue ''
-              end %>
-              <td><%= value %></td>
-            <% end %>
-            <td class="buttons">
-              <% if User.current.allowed_to?(:manage_cash_flow_entries, nil, global: true) %>
-                <%= link_to l(:button_edit), edit_cash_flow_entry_path(entry), class: 'icon icon-edit' %>
-                <%= link_to l(:button_delete), cash_flow_entry_path(entry), data: { confirm: l(:text_are_you_sure) }, method: :delete, class: 'icon icon-del' %>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-
-<%= pagination_links_full(@entry_pages, @entry_count) %>
-
-<div class="cash-flow-summary">
-  <h3><%= l(:label_cash_flow_summary) %></h3>
-  <p><strong><%= l(:label_cash_flow_total_revenue) %>:</strong> <span class="revenue"><%= format_amount(@total_revenue) %></span></p>
-  <p><strong><%= l(:label_cash_flow_total_expense) %>:</strong> <span class="expense"><%= format_amount(@total_expense) %></span></p>
-  <p><strong><%= l(:label_cash_flow_balance) %>:</strong> <span class="<%= @balance >= 0 ? 'revenue' : 'expense' %>"><%= format_amount(@balance) %></span></p>
-</div>
-
 <% content_for :header_tags do %>
-  <%= stylesheet_link_tag 'cash_flow_pro', plugin: 'redmine_cash_flow_pro' %>
+  <%= stylesheet_link_tag "cash_flow_filters?v=#{Time.now.to_i}", plugin: 'redmine_cash_flow_pro' %>
+  <%= javascript_include_tag "cash_flow?v=#{Time.now.to_i}", plugin: 'redmine_cash_flow_pro' %>
 <% end %>
+
+<div class="contextual">
+  <%= link_to l(:button_new_entry), new_cash_flow_entry_path, 
+        class: 'icon icon-add', 
+        title: l(:title_create_new_entry),
+        data: { toggle: 'tooltip' } if User.current.allowed_to?(:manage_cash_flow_entries, nil, global: true) %>
+  
+  <%= link_to l(:button_import), import_form_cash_flow_entries_path, 
+        class: 'icon icon-import', 
+        title: l(:title_import_entries),
+        data: { toggle: 'tooltip' } %>
+        
+  <%= link_to l(:button_export), export_cash_flow_entries_path(request.query_parameters), 
+        class: 'icon icon-export', 
+        title: l(:title_export_entries),
+        data: { toggle: 'tooltip' } %>
+</div>
+
+<div class="filters-header">
+  <h2><%= l(:label_cash_flow) %></h2>
+  <!--
+  <button type="button" class="show-filters" 
+          aria-label="<%= l(:label_filter_plural) %>"
+          aria-expanded="false"
+          data-toggle="filters-dropdown">
+    <span class="icon icon-filter"></span>
+    <span class="filters-header-text"><%= l(:label_filter_plural) %></span>
+  </button>
+  
+  <button class="filter-toggle" aria-label="<%= l(:label_toggle_filters) %>" aria-expanded="false"> 
+    <span class="active-filters-count" aria-hidden="true"></span>
+  </button>
+  -->
+</div>
+
+<% if params[:query].present? %>
+  <div class="filters-applied" role="region" aria-label="<%= l(:label_active_filters) %>">
+    <strong><%= l(:label_active_filters) %>:</strong>
+    <% params[:query].each do |k, v| %>
+      <% next if v.blank? %>
+      <span class="filter-tag">
+        <%= l("field_#{k}") %>: <%= v %> 
+        <%= link_to '&times;'.html_safe, '#', 
+              class: 'remove-filter', 
+              'aria-label': l(:label_remove_filter),
+              data: { filter: k } %>
+      </span>
+    <% end %>
+    <%= link_to l(:button_clear), cash_flow_entries_path, 
+          class: 'button -secondary',
+          'aria-label': l(:label_clear_all_filters) %>
+  </div>
+<% end %>
+
+<div class="cash-flow-container">
+  <div class="cash-flow-table-container" role="region" aria-label="<%= l(:label_cash_flow_entries) %>">
+    <%= form_tag(cash_flow_entries_path, method: :get, id: 'filters_form') do %>
+      <table class="list cash-flow-entries">
+        <thead>
+          <tr>
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:label_transaction_type),
+              field_name: 'transaction_type',
+              field_label: l(:field_transaction_type),
+              options: [['', '']] + CashFlowEntry.transaction_type_options,
+              selected: @query[:transaction_type]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:label_cash_flow_category),
+              field_name: 'category',
+              field_label: l(:label_cash_flow_category),
+              options: [['', '']] + @available_categories.map { |c| [c, c] },
+              selected: @query[:category]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:field_description),
+              field_name: 'description',
+              field_label: l(:field_description),
+              input_type: 'text',
+              value: @query[:description]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:field_status),
+              field_name: 'status',
+              field_label: l(:field_status),
+              options: [['', '']] + CashFlowEntry.status_options,
+              selected: @query[:status]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:field_entry_date),
+              field_name: ['from_date', 'to_date'],
+              field_label: l(:field_date_range),
+              input_type: 'date_range',
+              values: [@query[:from_date], @query[:to_date]]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:field_amount),
+              field_name: ['amount_min', 'amount_max'],
+              field_label: l(:field_amount),
+              input_type: 'number_range',
+              values: [@query[:amount_min], @query[:amount_max]]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:field_project),
+              field_name: 'project_id',
+              field_label: l(:field_project),
+              options: [['', '']] + project_collection_for_select(@projects),
+              selected: @query[:project_id]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:field_issue),
+              field_name: 'issue_id',
+              field_label: l(:field_issue),
+              input_type: 'text',
+              value: @query[:issue_id]
+            } %>
+
+            <%= render partial: 'filter_header', locals: { 
+              label: l(:field_author),
+              field_name: 'author_id',
+              field_label: l(:field_author),
+              options: [['', '']] + User.active.order(:firstname).map { |u| [u.name, u.id] },
+              selected: @query[:author_id]
+            } %>
+
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @cash_flow_entries.present? %>
+            <% @cash_flow_entries.each do |entry| %>
+              <tr class="<%= cycle('odd', 'even') %>">
+                <td><%= format_transaction_type(entry.transaction_type) %></td>
+                <td><%= entry.category %></td>
+                <td><%= entry.description %></td>
+                <td><%= format_status(entry.status) %></td>
+                <td><%= format_date(entry.entry_date) %></td>
+                <td class="<%= entry.transaction_type %>">
+                  <%= format_amount(entry.amount, entry.transaction_type) %>
+                </td>
+                <td><%= entry.project.present? ? link_to_project(entry.project) : '' %></td>
+                <td><%= entry.issue.present? ? link_to(entry.issue.subject, issue_path(entry.issue)) : '' %></td>
+                <td><%= entry.author.present? ? link_to_user(entry.author) : '' %></td>
+                <td class="buttons">
+                  <% if User.current.allowed_to?(:manage_cash_flow_entries, nil, global: true) %>
+                    <%= link_to l(:button_edit), edit_cash_flow_entry_path(entry), class: 'icon icon-edit' %>
+                    <%= link_to l(:button_delete), cash_flow_entry_path(entry), data: { confirm: l(:text_are_you_sure) }, method: :delete, class: 'icon icon-del' %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="10" class="no-data">
+                <div class="no-data-message">
+                  <span class="icon icon-info"></span>
+                  <%= l(:label_no_data) %>
+                  <% if params[:query].present? %>
+                    <br>
+                    <small><%= l(:text_no_data_with_filters) %></small>
+                  <% end %>
+                </div>
+              </td>              
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5"><strong><%= l(:label_total) %></strong></td>
+            <td><strong><%= format_amount(@total_revenue + @total_expense, 'total') %></strong></td>
+            <td colspan="4"></td>
+          </tr>
+        </tfoot>
+      </table>
+    <% end %>
+  </div>
+
+  <div class="cash-flow-summary-container" role="complementary" aria-label="<%= l(:label_financial_summary) %>">
+    <div class="cash-flow-summary">
+      <h3><%= l(:label_cash_flow_summary) %></h3>
+      <div class="summary-cards">
+        <div class="summary-card" role="region" aria-label="<%= l(:label_total_revenue) %>">
+          <span class="summary-label"><%= l(:label_cash_flow_total_revenue) %></span>
+          <span class="summary-value revenue"><%= format_amount(@total_revenue) %></span>
+        </div>
+        
+        <div class="summary-card" role="region" aria-label="<%= l(:label_total_expense) %>">
+          <span class="summary-label"><%= l(:label_cash_flow_total_expense) %></span>
+          <span class="summary-value expense"><%= format_amount(@total_expense) %></span>
+        </div>
+        
+        <div class="summary-card balance" role="region" aria-label="<%= l(:label_balance) %>">
+          <span class="summary-label"><%= l(:label_cash_flow_balance) %></span>
+          <span class="summary-value <%= @balance >= 0 ? 'revenue' : 'expense' %>">
+            <%= format_amount(@balance) %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
